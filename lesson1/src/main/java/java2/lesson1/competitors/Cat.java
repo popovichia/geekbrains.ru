@@ -1,4 +1,4 @@
-package java2.lesson1.Marathon;
+package java2.lesson1.competitors;
 
 public class Cat extends Animal {
     public Cat(String name) {

@@ -1,4 +1,6 @@
-package java2.lesson1.Marathon;
+package java2.lesson1.competitors;
+
+import java2.lesson1.interfaces.Competitor;
 
 public class Human implements Competitor {
     String name;
@@ -24,6 +26,7 @@ public class Human implements Competitor {
 
     @Override
     public void run(int dist) {
+        System.out.println("Дистанция кросса: " + dist + ", максимальная дистанция участника: " + maxRunDistance);
         if (dist <= maxRunDistance) {
             System.out.println(name + " хорошо справился с кроссом");
         } else {
@@ -34,6 +37,7 @@ public class Human implements Competitor {
 
     @Override
     public void jump(int height) {
+        System.out.println("Высота стены: " + height + ", максимальная высота прыжка участника: " + maxJumpHeight);
         if (height <= maxJumpHeight) {
             System.out.println(name + " удачно перепрыгнул через стену");
         } else {
@@ -44,6 +48,7 @@ public class Human implements Competitor {
 
     @Override
     public void swim(int dist) {
+        System.out.println("Дистанция заплыва: " + dist + ", максимальная длина заплыва участника: " + maxSwimDistance);
         if (dist <= maxSwimDistance) {
             System.out.println(name + " отлично проплыл");
         } else {

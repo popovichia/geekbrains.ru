@@ -1,4 +1,7 @@
-package java2.lesson1.Marathon;
+package java2.lesson1.obstacles;
+
+import java2.lesson1.interfaces.Competitor;
+import java2.lesson1.interfaces.Obstacle;
 
 public class Water extends Obstacle {
     int length;

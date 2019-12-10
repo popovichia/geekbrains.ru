@@ -1,4 +1,4 @@
-package java2.lesson1.Marathon;
+package java2.lesson1.interfaces;
 
 public interface Competitor {
     void run(int dist);
