@@ -1,4 +1,4 @@
-package lessons.l1.Marathon;
+package java2.lesson1.Marathon;
 
 public class Cross extends Obstacle {
     int length;

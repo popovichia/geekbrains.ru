@@ -1,13 +1,13 @@
-package lessons.l1;
+package java2.lesson1;
 
-import lessons.l1.Marathon.Cat;
-import lessons.l1.Marathon.Competitor;
-import lessons.l1.Marathon.Cross;
-import lessons.l1.Marathon.Dog;
-import lessons.l1.Marathon.Human;
-import lessons.l1.Marathon.Obstacle;
-import lessons.l1.Marathon.Wall;
-import lessons.l1.Marathon.Water;
+import java2.lesson1.Marathon.Cat;
+import java2.lesson1.Marathon.Competitor;
+import java2.lesson1.Marathon.Cross;
+import java2.lesson1.Marathon.Dog;
+import java2.lesson1.Marathon.Human;
+import java2.lesson1.Marathon.Obstacle;
+import java2.lesson1.Marathon.Wall;
+import java2.lesson1.Marathon.Water;
 
 public class Main {
     public static void main(String[] args) {
