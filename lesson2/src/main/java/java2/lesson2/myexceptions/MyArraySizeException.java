@@ -9,6 +9,6 @@ package java2.lesson2.myexceptions;
  *
  * @author igor
  */
-public class MySizeArrayException {
+public class MyArraySizeException extends Exception {
     
 }
