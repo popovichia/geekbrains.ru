@@ -5,7 +5,6 @@ import java2.lesson1.interfaces.Competitor;
 import java2.lesson1.obstacles.Cross;
 import java2.lesson1.competitors.Dog;
 import java2.lesson1.competitors.Human;
-import java2.lesson1.interfaces.Obstacle;
 import java2.lesson1.marathon.Course;
 import java2.lesson1.marathon.Team;
 import java2.lesson1.obstacles.Wall;
