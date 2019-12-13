@@ -1,4 +1,4 @@
-package Lesson_2;
+package java2.lesson2;
 
 public enum Fruit {
     ORANGE("Апельсин",2), APPLE("Яблоко",3), BANANA("Банан",3), CHERRY("Вишня",7);
