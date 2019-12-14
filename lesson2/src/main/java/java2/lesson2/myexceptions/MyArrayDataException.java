@@ -10,5 +10,7 @@ package java2.lesson2.myexceptions;
  * @author igor
  */
 public class MyArrayDataException extends Exception {
-    
+    public MyArrayDataException(String errorMessage) {
+        super(errorMessage);
+    }
 }

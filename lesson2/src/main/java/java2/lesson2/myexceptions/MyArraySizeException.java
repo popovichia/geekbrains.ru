@@ -10,5 +10,7 @@ package java2.lesson2.myexceptions;
  * @author igor
  */
 public class MyArraySizeException extends Exception {
-    
+    public MyArraySizeException(String errorMessage) {
+        super(errorMessage);
+    }
 }
