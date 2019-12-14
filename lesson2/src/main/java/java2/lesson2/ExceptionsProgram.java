@@ -13,57 +13,6 @@ import java2.lesson2.myexceptions.MyArraySizeException;
  * @author igor
  */
 public class ExceptionsProgram {    
-    public static void main(String[] args) {
-        String[][] stringArrayCorrect =  {
-            {"1","2","3","4"}, 
-            {"1","2","3","4"},
-            {"1","2","3","4"},
-            {"1","2","3","4"}
-        };
-        String[][] stringArrayWrongChars = {
-            {"1","2","3","x"}, 
-            {"1","x","3","4"},
-            {"1","2","3","4"},
-            {"1","x","3","4"}
-        };
-        String[][] stringArrayWrongSize = {
-            {"1","2","3","4"}, 
-            {"1","2","3","4"},
-            {"1","2","3","4"},
-            {"1","2","3","4","5"}
-        };
-        ExceptionsProgram exceptionsProgram = new ExceptionsProgram();
-        try {
-            System.out.println("Обрабатываем корректный массив!");
-            System.out.println("Сумма значений массива: " + exceptionsProgram.arraySum(stringArrayCorrect));
-        } catch(MyArraySizeException e) {
-            System.out.println(e);
-        } catch(MyArrayDataException e) {
-            System.out.println(e);
-        } catch(Exception eAll) {
-            System.out.println("Неизвестная ошибка, обратитесь, пожалуйста, к разработчикам. Сообщение об ошибке: " + eAll);
-        }
-        try {
-            System.out.println("Обрабатываем некорректный массив! Неверный размер массива.");
-            System.out.println("Сумма значений массива: " + exceptionsProgram.arraySum(stringArrayWrongSize));
-        } catch(MyArraySizeException e) {
-            System.out.println(e);
-        } catch(MyArrayDataException e) {
-            System.out.println(e);
-        } catch(Exception eAll) {
-            System.out.println("Неизвестная ошибка, обратитесь, пожалуйста, к разработчикам. Сообщение об ошибке: " + eAll);
-        }
-        try {
-            System.out.println("Обрабатываем некорректный массив! Неверное содержимое массива.");
-            System.out.println("Сумма значений массива: " + exceptionsProgram.arraySum(stringArrayWrongChars));
-        } catch(MyArraySizeException e) {
-            System.out.println(e);
-        } catch(MyArrayDataException e) {
-            System.out.println(e);
-        } catch(Exception eAll) {
-            System.out.println("Неизвестная ошибка, обратитесь, пожалуйста, к разработчикам. Сообщение об ошибке: " + eAll);
-        }
-    }
     public int arraySum(String[][] stringArray) throws MyArraySizeException, MyArrayDataException {
         int sum = 0;
         int arrayItem;
@@ -83,7 +32,7 @@ public class ExceptionsProgram {
                     arrayItem = Integer.valueOf(stringArray[i][j]);
                 } catch(NumberFormatException e) {
                     throw new MyArrayDataException("Символ " + stringArray[i][j] + " в массиве,"
-                    + " не является целым числом. Строка - " + i + ", столбец - " + j);
+                    + " не является целым числом. Строка - " + (i+1) + ", столбец - " + (j+1));
                 }
                 sum += arrayItem;
             }

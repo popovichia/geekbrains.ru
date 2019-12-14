@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package java2.lesson2;
+package java2.lesson2.enums;
 
 /**
  *
@@ -21,6 +21,32 @@ public enum DayOfWeek {
     private int index;
     private String nameRu;
     private int workTime;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public String getNameRu() {
+        return nameRu;
+    }
+
+    public void setNameRu(String nameRu) {
+        this.nameRu = nameRu;
+    }
+
+    public int getWorkTime() {
+        return workTime;
+    }
+
+    public void setWorkTime(int workTime) {
+        this.workTime = workTime;
+    }
+    
+    
     
     DayOfWeek(int index, String nameRu, int workTime) {
         this.index = index;
