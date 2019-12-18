@@ -5,7 +5,11 @@
  */
 package java2.lesson3;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java2.lesson3.task1.WordsArray;
+import java2.lesson3.task2.PhoneBook;
 
 /**
  *
@@ -37,5 +41,17 @@ public class Start {
             "табун"
         };
         WordsArray wordsArray = new WordsArray(words);
+        HashMap uniqElements = wordsArray.getUniqElements(words);
+        Set<Map.Entry<String, Integer>> set = uniqElements.entrySet();
+        for(Map.Entry<String, Integer> m : set) {
+            System.out.println(m.getKey() + " - " + m.getValue());
+        }
+        PhoneBook phoneBook = new PhoneBook();
+        phoneBook.add("Igor", "123");
+        phoneBook.add("Igor", "123");
+        phoneBook.add("Igor", "1234");
+        phoneBook.add("Igor1", "123");
+        phoneBook.add("Igor2", "123");
+        System.out.println(phoneBook.get("Igor1"));
     }
 }

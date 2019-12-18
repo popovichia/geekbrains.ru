@@ -13,19 +13,20 @@ import java.util.HashMap;
  */
 public class WordsArray {
     String[] words;
+    int arraySize;
     public WordsArray(String[] words) {
-        this.words = new String[words.length];
-        System.arraycopy(words, 0, this.words, 0, words.length);
-    }
-    public String[] getWords() {
-        String[] wordsCopy = new String[this.words.length];
-        System.arraycopy(this.words, 0, wordsCopy, 0, this.words.length);
-        return wordsCopy;
+        this.arraySize = words.length;
+        this.words = new String[arraySize];
+        System.arraycopy(words, 0, this.words, 0, arraySize);
     }
     public HashMap<String, Integer> getUniqElements(String[] words) {
         HashMap<String, Integer> hashMap = new HashMap<>();
         for(String word : words) {
-            hashMap.containsKey(word) == null ? hashMap.put(word, 1) : hashMap.put(word, Integer.MIN_VALUE);
+            if (hashMap.get(word) == null) {
+                hashMap.put(word, 1);
+            } else {
+                hashMap.put(word, hashMap.get(word) + 1);
+            }
         }
         return hashMap;
     }
