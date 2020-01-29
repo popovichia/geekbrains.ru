@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java2.chat.server.JFXController;
 import java2.chat.server.ServerMain;
-import java2.chat.server.entity.BlackList;
 import java2.chat.server.entity.User;
 
 public class ClientService extends Thread {
@@ -16,7 +15,7 @@ public class ClientService extends Thread {
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private User user;
-    private BlackList blackList;
+//    private BlackList blackList;
 
     public ClientService(ServerMain serverMain, Socket socket, JFXController jfxController) {
         this.serverMain = serverMain;
@@ -53,11 +52,10 @@ public class ClientService extends Thread {
                         sendMsg("/authok");
                         serverMain.subscribe(ClientService.this);
                         ClientService.this.user = new User(nickName);
-                        ClientService.this.blackList = new BlackList(user);
                         ClientService.this.jfxController.writeLog("Вошёл пользователь: "
                                 + ClientService.this.user.getNickName() + "; "
                                 + "чёрный список пользователя: "
-                                + ClientService.this.blackList.getBlackList());
+                                + ClientService.this.user.getBlackList().toString());
                         return true;                       
                     }
                 }
@@ -82,8 +80,10 @@ public class ClientService extends Thread {
                     }
                     if(messageArray[0].equals("/block")) {
                         if (messageArray.length == 2) {
-                            serverMain.addUserToBlackList(this, messageArray[1]);
-                            this.jfxController.writeLog(this.blackList.getBlackList().toString());
+                            serverMain.addUserToBlackList(this.getUser(), messageArray[1]);
+                            this.jfxController.writeLog("Чёрный список пользователя "
+                                    + this.getUser().getNickName() + ": "
+                                    + this.getUser().getBlackList().toString());
                         }                        
                     }
                     if (messageFromClient.equals("/end")) {
@@ -112,6 +112,8 @@ public class ClientService extends Thread {
             }
         } catch(Exception exception) {
             exception.printStackTrace();
+        } finally {
+            serverMain.unsubscribe(ClientService.this);
         }
     }
     public void sendMsg(String message) {
@@ -123,9 +125,6 @@ public class ClientService extends Thread {
     }
     public User getUser() {
         return this.user;
-    }
-    public BlackList getBlackList() {
-        return this.blackList;
     }
     @Override
     public void run() {

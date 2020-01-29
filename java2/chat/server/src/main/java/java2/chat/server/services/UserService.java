@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java2.chat.server.entity.User;
 
 /**
  *
@@ -27,7 +29,27 @@ public class UserService {
             e.printStackTrace();
         }
     }
-
+    public static ArrayList<User> getListAllUsers(){
+        ArrayList<User> resultList = new ArrayList<>();
+        String sql = "SELECT * FROM users;";
+        System.out.println(sql);
+        try {
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String login = resultSet.getString(2);
+                String nickName = resultSet.getString(3);
+                String fullName = resultSet.getString(4);
+                User user = new User(id, login, nickName, fullName);
+                resultList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return resultList;
+        
+    }
     public static String getFieldValueByNickName(String fieldName, String nickName) {
         String resultString = null;
         String sql = String.format("SELECT %s FROM users where nickname = '%s'", fieldName, nickName);
@@ -43,6 +65,50 @@ public class UserService {
         }
         return resultString;
     }
+    public static ArrayList<String> getBlackListByNickName(User blackListOwner) {
+        ArrayList<String> resultList = new ArrayList<>();
+        String sql = String.format(
+                "SELECT ublocked.nickname FROM blacklist AS b "
+                + "INNER JOIN users AS uowner ON b.user_id=uowner.id "
+                + "INNER JOIN users AS ublocked ON b.block_user_id=ublocked.id "
+                + "WHERE uowner.nickname ='%s'",
+                blackListOwner.getNickName());
+        try {
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                resultList.add(resultSet.getString(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+    public static int getRowId() {
+        int result = 0;
+        String sql = "SELECT MAX(id) FROM blacklist;";
+        try {
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                result = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public static void saveInBlackListByNickName(User blackListOwner, String nickName) {
+        int rowId = getRowId() + 1;
+        int userId = Integer.valueOf(getFieldValueByNickName("id", nickName));
+        String sqlInsert = String.format(
+                "INSERT INTO blacklist(id, user_id, block_user_id) VALUES(%d, %d, %d);",
+                rowId, blackListOwner.getId(), userId);
+        try {
+            statement.executeUpdate(sqlInsert);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public static void disconnect() {
         try {
             connection.close();

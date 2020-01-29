@@ -13,7 +13,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-
 public class JFXController {
     @FXML
     TextField textFieldServer;
@@ -37,69 +36,21 @@ public class JFXController {
     private Socket socket;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
-
+    private Connection connection;
     public void connect() {
-        try {
-            String serverAddress = textFieldServer.getText();
-            int port = Integer.valueOf(textFieldPort.getText());
-            socket = new Socket(serverAddress, port);
-            dataInputStream = new DataInputStream(socket.getInputStream());
-            dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        while (true) {
-                            String stringFromServer = dataInputStream.readUTF();
-                            if (stringFromServer.startsWith("/authok")) {
-                                changeUI(true);
-                                break;
-                            } else {
-                                textAreaChat.appendText(stringFromServer + "\n");
-                            }
-                        }
-                        while (true) {
-                            String stringFromServer = dataInputStream.readUTF();
-                            if (stringFromServer.equals("/serverClosed")) {
-                                break;
-                            }
-                            textAreaChat.appendText(stringFromServer + "\n");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (Exception exception){
-                        exception.printStackTrace();
-                    } finally {
-                        try {
-                            dataInputStream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            dataOutputStream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        changeUI(false);
-                    }
-                }
-            }).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.connection = new Connection(this);
+        this.connection.start();
+        this.socket = connection.getSocket();
+        this.dataInputStream = connection.getDataInputStream();
+        this.dataOutputStream = connection.getDataOutputStream();
     }
 
     public void tryToAuth(ActionEvent actionEvent) {
-        if (socket == null || socket.isClosed()) {
+        if (this.socket == null || this.socket.isClosed()) {
             connect();
         }
         try {
-            dataOutputStream.writeUTF("/auth " + textFieldLogin.getText() + " " + textFieldPassword.getText());
+            this.dataOutputStream.writeUTF("/auth " + textFieldLogin.getText() + " " + textFieldPassword.getText());
             textFieldLogin.clear();
             textFieldPassword.clear();
         } catch (IOException e) {
@@ -108,7 +59,7 @@ public class JFXController {
     }
     public void sendMsg() {
         try {
-            dataOutputStream.writeUTF(textFieldMessage.getText());
+            this.dataOutputStream.writeUTF(textFieldMessage.getText());
             textFieldMessage.clear();
             textFieldMessage.requestFocus();
         } catch (IOException e) {

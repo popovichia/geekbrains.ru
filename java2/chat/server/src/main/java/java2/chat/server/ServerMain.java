@@ -6,9 +6,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java2.chat.server.entity.User;
+import java2.chat.server.services.UserService;
 
 public class ServerMain extends Thread {
     private ArrayList<ClientService> clientsServices;
+    private ArrayList<User> listAllUsers;
     private ServerSocket serverSocket;
     private Socket socket;
     private int port;
@@ -16,6 +18,7 @@ public class ServerMain extends Thread {
     private boolean isStopped = false;
     public ServerMain(int port, JFXController jfxController) {
         this.clientsServices = new ArrayList<>();
+        this.listAllUsers = new ArrayList<>();
         this.port = port;
         this.jfxController = jfxController;
         this.jfxController.writeLog("Сервер запущен.\n"
@@ -39,7 +42,7 @@ public class ServerMain extends Thread {
     }
     public void sendMsg(ClientService clientServiceFrom, String message) {        
         for (ClientService cs : clientsServices) {
-            if (!cs.getBlackList().getBlackList().contains(clientServiceFrom.getUser().getNickName())) {
+            if (!cs.getUser().getBlackList().contains(clientServiceFrom.getUser().getNickName())) {
                 cs.sendMsg(clientServiceFrom.getUser().getNickName() + ": " + message);
             }
         }
@@ -51,12 +54,10 @@ public class ServerMain extends Thread {
             }
         }
     }
-    public void addUserToBlackList(ClientService clientService, String blockedUser) {
-        for (ClientService cs : clientsServices) {            
-            if (cs.getUser().getNickName().equals(blockedUser)) {
-                clientService.getBlackList().addUserToBlackList(cs.getUser());
-            }
-        }        
+    public void addUserToBlackList(User user, String blockedUser) {
+        if (!user.getBlackList().contains(blockedUser)) {
+            user.addUserToBlackList(blockedUser);
+        }
     }
     public void stopServer() {
         isStopped = true;
@@ -83,6 +84,9 @@ public class ServerMain extends Thread {
                 ClientService clientService = new ClientService(this, socket, this.jfxController);
                 clientService.start();
                 this.jfxController.writeLog("Подключился клиент." + socket);
+                UserService.connect();
+                listAllUsers = UserService.getListAllUsers();
+                UserService.disconnect();
             }
         } catch (IOException e) {
             e.printStackTrace();

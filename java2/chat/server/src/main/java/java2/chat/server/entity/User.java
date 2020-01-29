@@ -5,6 +5,7 @@
  */
 package java2.chat.server.entity;
 
+import java.util.ArrayList;
 import java2.chat.server.services.UserService;
 
 /**
@@ -16,6 +17,7 @@ public class User {
     private String login;
     private String nickName;
     private String fullName;
+    private ArrayList<String> blackList;
 
     public User(String nickName) {
         this.nickName = nickName;
@@ -24,6 +26,27 @@ public class User {
         this.login = UserService.getFieldValueByNickName("login", nickName);
         this.fullName = UserService.getFieldValueByNickName("fullname", nickName);
         UserService.disconnect();
+        loadBlackList(this);
+        
+    }
+    public User(int id, String login, String nickName, String fullname) {
+        this.id = id;
+        this.login = login;
+        this.nickName = nickName;
+        this.fullName = fullname;
+    }
+    public void loadBlackList(User blackListOwner) {
+        UserService.connect();
+        this.blackList = UserService.getBlackListByNickName(blackListOwner);
+        UserService.disconnect();        
+    }
+    public void addUserToBlackList(String nickName) {
+        if (!this.blackList.contains(nickName)) {
+            this.blackList.add(nickName);      
+            UserService.connect();
+            UserService.saveInBlackListByNickName(this, nickName);
+            UserService.disconnect();
+        }
     }
     public int getId() {
         return this.id;
@@ -55,5 +78,8 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+    public ArrayList<String> getBlackList() {
+        return this.blackList;
     }
 }
