@@ -5,6 +5,7 @@
  */
 package javacore.lesson1;
 
+import javacore.lesson1.task4.Task4;
 import javacore.lesson1.task3.Task3;
 
 /**
@@ -19,5 +20,7 @@ public class Tests {
         task2.test();
         Task3 task3 = new Task3();
         task3.test();
+        Task4 task4 = new Task4();
+        task4.test();
     }
 }

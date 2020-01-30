@@ -29,8 +29,17 @@ public class Box<T extends Fruit> {
         }
         return resultWeight;
     }
-    public boolean compare(Box<T> anotherBox) {
+    public ArrayList<T> getFruits() {
+        return this.fruits;
+    }
+    public boolean compare(Box anotherBox) {
         return this.getWeight() == anotherBox.getWeight() ? true : false; 
+    }
+    public void putTo(Box anotherBox) {
+        if (anotherBox.getFruits().isEmpty()) {
+            anotherBox.getFruits().addAll(this.getFruits());
+            this.getFruits().clear();
+        }
     }
     @Override
     public String toString() {

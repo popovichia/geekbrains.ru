@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javacore.lesson1;
+package javacore.lesson1.task4;
 
 /**
  *
  * @author igor
  */
-public class Task4 {
-    
+public interface Lambda {
+    int calculate(int a, int b);
 }

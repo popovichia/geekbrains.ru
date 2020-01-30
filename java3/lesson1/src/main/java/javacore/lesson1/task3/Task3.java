@@ -37,6 +37,13 @@ public class Task3 {
 
         System.out.println("Compare boxOranges and boxApples - " + boxOranges.compare(boxApples));
         
+        Box boxFruit = new Box();
+        System.out.println("boxApples - " + boxApples);
+        System.out.println("boxFruit - " + boxFruit);        
+        boxApples.putTo(boxFruit);
+        System.out.println("boxApples - " + boxApples);
+        System.out.println("boxFruit - " + boxFruit);        
+        
         System.out.println("--------------------------\n");
     }
 }
