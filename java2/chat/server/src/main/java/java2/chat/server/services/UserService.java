@@ -108,13 +108,11 @@ public class UserService {
             e.printStackTrace();
         }
     }
-    
     public static void disconnect() {
         try {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-    
+    }    
 }

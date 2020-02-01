@@ -15,7 +15,6 @@ public class ClientService extends Thread {
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private User user;
-//    private BlackList blackList;
 
     public ClientService(ServerMain serverMain, Socket socket, JFXController jfxController) {
         this.serverMain = serverMain;

@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java2.chat.server.entity.User;
+import java2.chat.server.services.DBService;
 import java2.chat.server.services.UserService;
 
 public class ServerMain extends Thread {
@@ -24,6 +25,8 @@ public class ServerMain extends Thread {
         this.jfxController.writeLog("Сервер запущен.\n"
                 + "Для подключения к серверу, используйте параметры:\n"
                 + "Сервер - localhost, порт - " + port);
+        initilizeDB();
+        this.jfxController.writeLog("База данных инициализирована.\n");
     }
     public boolean isLoggedIn(String nickName) {
         boolean result = false;
@@ -108,5 +111,23 @@ public class ServerMain extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+    public void initilizeDB() {
+        String sqlRequestUsers =
+                "CREATE TABLE IF NOT EXISTS users ( "
+                + "id INTEGER NOT NULL PRIMARY KEY, "
+                + "login TEXT NOT NULL, "
+                + "password TEXT NOT NULL, "
+                + "nickname TEXT NOT NULL, "
+                + "fullname TEXT);";
+        String sqlRequestBlackList =
+                "CREATE TABLE IF NOT EXISTS blacklist ( "
+                + "id INTEGER NOT NULL Primary key, "
+                + "user_id INTEGER NOT NULL, "
+                + "block_user_id INTEGER NOT NULL);";
+        DBService.connect();
+        DBService.checkTable(sqlRequestUsers);
+        DBService.checkTable(sqlRequestBlackList);
+        DBService.disconnect();
     }
 }

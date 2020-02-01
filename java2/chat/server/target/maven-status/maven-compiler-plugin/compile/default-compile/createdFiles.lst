@@ -1,6 +1,7 @@
 java2/chat/server/services/AuthService.class
 java2/chat/server/services/ClientService.class
 java2/chat/server/ServerMain.class
+java2/chat/server/services/DBService.class
 java2/chat/server/entity/User.class
 java2/chat/server/JFXController.class
 java2/chat/server/services/UserService.class
