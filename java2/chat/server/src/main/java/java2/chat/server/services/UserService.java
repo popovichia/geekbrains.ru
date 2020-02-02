@@ -108,6 +108,27 @@ public class UserService {
             e.printStackTrace();
         }
     }
+    public static void deleteUserFromBlackList(User blackListOwner, String nickName) {
+        int userId = Integer.valueOf(getFieldValueByNickName("id", nickName));
+        String sqlInsert = String.format(
+                "DELETE FROM blacklist WHERE id, user_id = %d and block_user_id = %d;",
+                blackListOwner.getId(), userId);
+        try {
+            statement.executeUpdate(sqlInsert);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void updateNickName(User user, String newNickName) {
+        String sqlUpdate = String.format(
+                "UPDATE users SET = '%s' nickname = WHERE id = %d",
+                newNickName, user.getId());
+        try {
+            statement.executeUpdate(sqlUpdate);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public static void disconnect() {
         try {
             connection.close();
