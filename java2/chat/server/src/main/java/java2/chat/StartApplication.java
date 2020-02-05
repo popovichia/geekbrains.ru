@@ -8,9 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
 public class StartApplication extends Application {
-
     @Override
     public void start(Stage stage) {
         try {
@@ -25,7 +23,6 @@ public class StartApplication extends Application {
             ioException.printStackTrace();
         }
     }
-
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
      * main() serves only as fallback in case the application can not be

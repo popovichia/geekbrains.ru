@@ -26,7 +26,7 @@ public class ServerMain extends Thread {
                 + "Для подключения к серверу, используйте параметры:\n"
                 + "Сервер - localhost, порт - " + port);
         initilizeDB();
-        this.jfxController.writeLog("База данных инициализирована.\n");
+        this.jfxController.writeLog("База данных инициализирована.");
     }
     public boolean isLoggedIn(String nickName) {
         boolean result = false;
