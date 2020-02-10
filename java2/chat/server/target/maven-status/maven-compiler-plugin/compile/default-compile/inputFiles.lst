@@ -1,7 +1,9 @@
+/Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/server/entity/Message.java
 /Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/server/services/UserService.java
 /Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/server/ServerMain.java
 /Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/server/services/DBService.java
 /Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/StartApplication.java
+/Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/server/entity/Command.java
 /Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/server/entity/User.java
 /Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/server/JFXController.java
 /Files/git/geekbrains.ru/java2/chat/server/src/main/java/java2/chat/server/services/ClientService.java

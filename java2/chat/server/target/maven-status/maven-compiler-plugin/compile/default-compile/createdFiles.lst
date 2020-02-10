@@ -3,6 +3,8 @@ java2/chat/server/services/ClientService.class
 java2/chat/server/ServerMain.class
 java2/chat/server/services/DBService.class
 java2/chat/server/entity/User.class
+java2/chat/server/entity/Command.class
 java2/chat/server/JFXController.class
 java2/chat/server/services/UserService.class
+java2/chat/server/entity/Message.class
 java2/chat/StartApplication.class

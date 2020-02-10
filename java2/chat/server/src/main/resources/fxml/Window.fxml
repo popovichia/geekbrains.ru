@@ -10,11 +10,11 @@
       fx:controller="java2.chat.server.JFXController">
     <HBox fx:id="hboxStart">
         <VBox>
-            <TextField fx:id="textFieldPort" promptText="Введите номер порта сервера:" />
+            <TextField fx:id="textFieldPort" promptText="Введите номер порта сервера:" >9999</TextField>
             <Button fx:id="buttonStartServer" onAction="#startServer" text="Start Server" />
         </VBox>
     </HBox>
-    <HBox fx:id="hboxStop" managed="false" visible="false">
+    <HBox fx:id="hboxStop" visible="false" managed="false" >
         <VBox>
             <Button fx:id="buttonStopServer" onAction="#stopServer" text="Stop Server"/>
         </VBox>

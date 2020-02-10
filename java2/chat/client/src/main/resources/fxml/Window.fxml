@@ -11,15 +11,15 @@
     <HBox fx:id="upperPanel">
         <HBox>
             <VBox>
-                <TextField fx:id="textFieldServer" promptText="Сервер"></TextField>
-                <TextField fx:id="textFieldPort" promptText="Порт"></TextField>
+                <TextField fx:id="textFieldServer" promptText="Сервер">localhost</TextField>
+                <TextField fx:id="textFieldPort" promptText="Порт">9999</TextField>
             </VBox>
         </HBox>
         <HBox>
             <VBox>
-                <TextField fx:id="textFieldLogin" HBox.hgrow="ALWAYS" promptText="Логин"></TextField>
-                <PasswordField fx:id="textFieldPassword" promptText="Пароль" onAction="#tryToAuth"/>
-                <Button text="Авторизоваться" onAction="#tryToAuth"/>
+                <TextField fx:id="textFieldLogin" HBox.hgrow="ALWAYS" promptText="Логин">login1</TextField>
+                <PasswordField fx:id="textFieldPassword" promptText="Пароль" >password1</PasswordField>
+                <Button text="Авторизоваться" onAction="#sendAuth"/>
             </VBox>
         </HBox>
     </HBox>
@@ -27,6 +27,6 @@
     <HBox fx:id="bottomPanel" managed="false" visible="false">
         <Label fx:id="labelNickName"/>
         <TextField fx:id="textFieldMessage" promptText="Введите текст" HBox.hgrow="ALWAYS" />
-        <Button fx:id="btn1" text="Send" onAction="#sendMsg" />
+        <Button fx:id="btn1" text="Send" onAction="#sendMessage" />
     </HBox>
 </VBox>

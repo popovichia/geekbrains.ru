@@ -9,14 +9,13 @@ import java2.chat.server.entity.User;
 import java2.chat.server.services.DBService;
 import java2.chat.server.services.UserService;
 
-public class ServerMain extends Thread {
+public class ServerMain implements Runnable {
     private ArrayList<ClientService> clientsServices;
     private ArrayList<User> listAllUsers;
     private ServerSocket serverSocket;
     private Socket socket;
     private int port;
     private JFXController jfxController;
-    private boolean isStopped = false;
     public ServerMain(int port, JFXController jfxController) {
         this.clientsServices = new ArrayList<>();
         this.listAllUsers = new ArrayList<>();
@@ -28,42 +27,44 @@ public class ServerMain extends Thread {
         initilizeDB();
         this.jfxController.writeLog("База данных инициализирована.");
     }
-    public boolean isLoggedIn(String nickName) {
-        boolean result = false;
-        for (ClientService cs : clientsServices) {
-            if (nickName.equals(cs.getUser().getNickName())) {
-                result = true;
-            }
-        }
-        return result;
-    }
+//    public boolean isLoggedIn(String nickName) {
+//        boolean result = false;
+//        for (ClientService cs : clientsServices) {
+//            if (nickName.equals(cs.getUser().getNickName())) {
+//                result = true;
+//            }
+//        }
+//        return result;
+//    }
     public void subscribe(ClientService clientService) {
         clientsServices.add(clientService);
     }
     public void unsubscribe(ClientService clientService) {
         clientsServices.remove(clientService);
     }
-    public void sendMsg(ClientService clientServiceFrom, String message) {        
-        for (ClientService cs : clientsServices) {
-            if (!cs.getUser().getBlackList().contains(clientServiceFrom.getUser().getNickName())) {
-                cs.sendMsg(clientServiceFrom.getUser().getNickName() + ": " + message);
-            }
-        }
-    }
-    public void sendMsg(ClientService clientServiceFrom, String clientServiceTo, String message) {        
-        for (ClientService cs : clientsServices) {
-            if (cs.getUser().getNickName().equals(clientServiceTo)) {
-                cs.sendMsg(clientServiceFrom.getUser().getNickName() + ": " + message);
-            }
-        }
-    }
+//    public void sendMsg(ClientService clientServiceFrom, String message) {        
+//        for (ClientService cs : clientsServices) {
+//            if (!cs.getUser().getBlackList().contains(clientServiceFrom.getUser().getNickName())) {
+//                cs.sendMsg(clientServiceFrom.getUser().getNickName() + ": " + message);
+//            }
+//        }
+//    }
+//    public void sendMsg(ClientService clientServiceFrom, String clientServiceTo, String message) {        
+//        for (ClientService cs : clientsServices) {
+//            if (cs.getUser().getNickName().equals(clientServiceTo)) {
+//                cs.sendMsg(clientServiceFrom.getUser().getNickName() + ": " + message);
+//            }
+//        }
+//    }
     public void addUserToBlackList(User user, String blockedUser) {
         if (!user.getBlackList().contains(blockedUser)) {
-            user.addUserToBlackList(blockedUser);
+            user.addToBlackList(blockedUser);
+            UserService.connect();
+            UserService.saveInBlackListByNickName(user, blockedUser);
+            UserService.disconnect();
         }
     }
     public void stopServer() {
-        isStopped = true;
         try {
             if(this.socket != null) {
                 this.socket.close();
@@ -81,34 +82,34 @@ public class ServerMain extends Thread {
     public void run() {
         try {
             this.serverSocket = new ServerSocket(port);
-            while (!isStopped) {
-                Thread.sleep(100);
+            while (true) {
                 this.socket = serverSocket.accept();
                 ClientService clientService = new ClientService(this, socket, this.jfxController);
-                clientService.start();
+                Thread clientServiceThread = new Thread(clientService);
+                clientServiceThread.start();
                 this.jfxController.writeLog("Подключился клиент." + socket);
-                UserService.connect();
-                listAllUsers = UserService.getListAllUsers();
-                UserService.disconnect();
+//                UserService.connect();
+//                listAllUsers = UserService.getListAllUsers();
+//                UserService.disconnect();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } catch (Exception exception){
+            exception.printStackTrace();
         } finally {
             try {
                 if(socket != null) {
                     socket.close();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
             try {
                 if(socket != null) {
                     serverSocket.close();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
         }
     }

@@ -32,7 +32,6 @@ public class UserService {
     public static ArrayList<User> getListAllUsers(){
         ArrayList<User> resultList = new ArrayList<>();
         String sql = "SELECT * FROM users;";
-        System.out.println(sql);
         try {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -52,11 +51,12 @@ public class UserService {
     }
     public static String getFieldValueByNickName(String fieldName, String nickName) {
         String resultString = null;
-        String sql = String.format("SELECT %s FROM users where nickname = '%s'", fieldName, nickName);
-        System.out.println(sql);
+        String sql = String.format("SELECT %s FROM users where nickname = '%s';", fieldName, nickName);
         try {
             ResultSet resultSet = statement.executeQuery(sql);
-            if (resultSet.next()) {
+            if (resultSet.next() && fieldName.equals("id")) {
+                resultString = String.valueOf(resultSet.getInt(1));
+            } else {
                 resultString = resultSet.getString(1);
             }
         } catch (SQLException e) {
@@ -65,14 +65,14 @@ public class UserService {
         }
         return resultString;
     }
-    public static ArrayList<String> getBlackListByNickName(User blackListOwner) {
+    public static ArrayList<String> getBlackListByNickName(String nickName) {
         ArrayList<String> resultList = new ArrayList<>();
         String sql = String.format(
                 "SELECT ublocked.nickname FROM blacklist AS b "
                 + "INNER JOIN users AS uowner ON b.user_id=uowner.id "
                 + "INNER JOIN users AS ublocked ON b.block_user_id=ublocked.id "
                 + "WHERE uowner.nickname ='%s'",
-                blackListOwner.getNickName());
+                nickName);
         try {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
