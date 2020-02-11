@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java2.chat.server.JFXController;
 import java2.chat.server.ServerMain;
+import java2.chat.server.entity.Command;
 import java2.chat.server.entity.Message;
 import java2.chat.server.entity.User;
 
@@ -34,77 +35,8 @@ public class ClientService implements Runnable {
     }
     @Override
     public void run() {
-        try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-            while (true) {
-                if (this.inputStream.available() > 0) {
-                    Object receivedObject = objectInputStream.readObject();
-                    if (receivedObject instanceof Message) {
-                        Message message = (Message) receivedObject;
-                        if (message.getTitle().equals("Authentication")) {
-                            if (!message.getUserFrom().isEmpty()
-                                    && !message.getBody().isEmpty()) {
-                                AuthService.connect();
-                                String nickName = AuthService.getNickByLoginAndPassword(
-                                        message.getUserFrom(), message.getBody());
-                                AuthService.disconnect();
-                                if (nickName != null) {
-                                    this.serverMain.subscribe(ClientService.this);
-                                    UserService.connect();
-                                    int id = Integer.valueOf(UserService.getFieldValueByNickName("id", nickName));
-                                    String login = UserService.getFieldValueByNickName("login", nickName);
-                                    String fullName = UserService.getFieldValueByNickName("fullname", nickName);
-                                    ArrayList<String> blackList = UserService.getBlackListByNickName(nickName);
-                                    UserService.disconnect();
-                                    ClientService.this.user = new User(id, login, nickName, fullName, blackList);
-                                    sendContent(user);
-                                    ClientService.this.jfxController.writeLog("Вошёл пользователь: "
-                                            + ClientService.this.user.getNickName() + "; "
-                                            + "чёрный список пользователя: "
-                                            + ClientService.this.user.getBlackList().toString());                      
-                                }
-                            } else {
-                                Message messageError = new Message("server", "", "Error", "Введите логин и пароль.");
-                                sendContent(messageError);
-                            }
-                        } else if (message.getTitle().equals("Message")
-                                && message.getUserTo().isEmpty()) {
-                            sendContent(message);
-                        }
-                    }
-                }
-            }
-        } catch(Exception exception) {
-            exception.printStackTrace();
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-            try {
-                socket.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-            AuthService.disconnect();
-        }
+        waitContentFromClient();
     }
-    public void sendContent(Object object) {
-        try {
-            objectOutputStream.writeObject(object);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-    }
-//    private void waitContent() {
-//        try (ObjectInputStream objectInputStream = new ObjectInputStream(dataInputStream)) {
-//            while (true) {
-//                if (dataInputStream.available() > 0) {
-//                    Object receivedObject = objectInputStream.readObject();
-//                    if (receivedObject instanceof Message) {
-//                        
-//                    }
 //                    if (messageArray[0].startsWith("/")) {
 //                        if(messageArray[0].equals("/tonick")) {
 //                            if (messageArray.length > 2 && serverMain.isLoggedIn(messageArray[1])) {
@@ -144,19 +76,91 @@ public class ClientService implements Runnable {
 //                    }
 //                }
 //            }
-//        } catch(Exception exception) {
-//            exception.printStackTrace();
-//        } finally {
-//            serverMain.unsubscribe(ClientService.this);
-//        }
-//    }
-//    public void sendMsg(String message) {
-//        try {
-//            dataOutputStream.writeUTF(message);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void waitContentFromClient() {
+        try {
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+            while (true) {
+                if (this.inputStream.available() > 0) {
+                    Object receivedObject = objectInputStream.readObject();
+                    if (receivedObject instanceof Message) {
+                        Message message = (Message) receivedObject;
+                        if (message.getTitle().equals("Authentication")) {
+                            if (message.getUserFrom().isEmpty()) {
+                                Message messageError = new Message("server",
+                                        "", "Error", "Введите имя пользователя.");
+                                serverMain.sendContent(messageError);                                
+                            } else if (message.getBody().isEmpty()) {
+                                Message messageError = new Message("server",
+                                        "", "Error", "Введите Пароль.");
+                                serverMain.sendContent(messageError);
+                            } else {
+                                AuthService.connect();
+                                String nickName = AuthService.getNickByLoginAndPassword(
+                                        message.getUserFrom(), message.getBody());
+                                AuthService.disconnect();
+                                if (nickName == null) {
+                                    Message messageError = new Message("server",
+                                            "", "Error", "Неверное имя пользователя или пароль.");
+                                    serverMain.sendContent(messageError);
+                                } else if (serverMain.isLoggedIn(nickName)) {
+                                    Message messageError = new Message("server",
+                                            "", "Error", "Данный пользователь уже в сети.");
+                                    serverMain.sendContent(messageError);                                    
+                                } else {
+                                    this.serverMain.subscribe(ClientService.this);
+                                    UserService.connect();
+                                    int id = Integer.valueOf(UserService.getFieldValueByNickName("id", nickName));
+                                    String login = UserService.getFieldValueByNickName("login", nickName);
+                                    String fullName = UserService.getFieldValueByNickName("fullname", nickName);
+                                    ArrayList<String> blackList = UserService.getBlackListByNickName(nickName);
+                                    UserService.disconnect();
+                                    ClientService.this.user = new User(id, login, nickName, fullName, blackList);
+                                    sendContent(user);
+                                    ClientService.this.jfxController.writeLog("Вошёл пользователь: "
+                                            + ClientService.this.user.getNickName() + "; "
+                                            + "чёрный список пользователя: "
+                                            + ClientService.this.user.getBlackList().toString());
+                                }                           
+                            }
+                        } else if (message.getTitle().equals("UsersList")) {
+                            serverMain.sendContent(message);
+                        } else if (message.getTitle().equals("Message")
+                                && message.getUserTo().isEmpty()) {
+                            serverMain.sendContent(message);
+                        } else if (message.getTitle().equals("Message")
+                                && !message.getUserTo().isEmpty()) {
+                            serverMain.sendContent(message);
+                        }
+                    } if (receivedObject instanceof Command) {
+                        //serverMain.sendContent(command);
+                    }
+                }
+            }
+        } catch(Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            try {
+                socket.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            serverMain.unsubscribe(ClientService.this);
+            AuthService.disconnect();
+        }
+        
+    }
+    public void sendContent(Object object) {
+        try {
+            objectOutputStream.writeObject(object);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
     public User getUser() {
         return this.user;
     }

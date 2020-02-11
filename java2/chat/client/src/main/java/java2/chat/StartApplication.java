@@ -1,6 +1,5 @@
 package java2.chat;
 
-import java2.chat.client.JFXController;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;

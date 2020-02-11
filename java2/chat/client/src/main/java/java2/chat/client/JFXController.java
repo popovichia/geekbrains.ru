@@ -19,6 +19,8 @@ public class JFXController {
     @FXML
     TextArea textAreaChat;
     @FXML
+    TextArea textAreaUsersList;
+    @FXML
     TextField textFieldMessage;
     @FXML
     HBox upperPanel;
@@ -46,8 +48,14 @@ public class JFXController {
         textFieldPassword.clear();
     }
     public void sendMessage() {
-        Message message = new Message("",
-                "", "Message", textFieldMessage.getText());
+        Message message = null;
+        if (textFieldMessage.getText().startsWith("/")) {
+            message = new Message(connection.getUser().getNickName(),
+                    "", "Message", textFieldMessage.getText());
+        } else {
+            message = new Message(connection.getUser().getNickName(),
+                    "", "Message", textFieldMessage.getText());            
+        }
         this.connection.sendContent(message);
         textFieldMessage.clear();
     }

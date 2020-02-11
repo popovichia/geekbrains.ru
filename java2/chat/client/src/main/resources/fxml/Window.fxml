@@ -9,21 +9,24 @@
 
 <VBox alignment="center" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.121" fx:controller="java2.chat.client.JFXController">
     <HBox fx:id="upperPanel">
-        <HBox>
-            <VBox>
-                <TextField fx:id="textFieldServer" promptText="Сервер">localhost</TextField>
-                <TextField fx:id="textFieldPort" promptText="Порт">9999</TextField>
-            </VBox>
-        </HBox>
-        <HBox>
-            <VBox>
-                <TextField fx:id="textFieldLogin" HBox.hgrow="ALWAYS" promptText="Логин">login1</TextField>
-                <PasswordField fx:id="textFieldPassword" promptText="Пароль" >password1</PasswordField>
-                <Button text="Авторизоваться" onAction="#sendAuth"/>
-            </VBox>
-        </HBox>
+        <VBox>
+            <TextField fx:id="textFieldServer" promptText="Сервер">localhost</TextField>
+            <TextField fx:id="textFieldPort" promptText="Порт">9999</TextField>
+        </VBox>
+        <VBox>
+            <TextField fx:id="textFieldLogin" HBox.hgrow="ALWAYS" promptText="Логин">login1</TextField>
+            <PasswordField fx:id="textFieldPassword" promptText="Пароль" >password1</PasswordField>
+            <Button text="Авторизоваться" onAction="#sendAuth"/>
+        </VBox>
     </HBox>
-    <TextArea fx:id="textAreaChat" VBox.vgrow="ALWAYS" editable="false" />
+    <HBox>
+        <VBox>
+            <TextArea fx:id="textAreaChat" VBox.vgrow="ALWAYS" editable="false" />
+        </VBox>
+        <VBox>
+            <TextArea fx:id="textAreaUsersList" VBox.vgrow="ALWAYS" editable="false" />
+        </VBox>
+    </HBox>
     <HBox fx:id="bottomPanel" managed="false" visible="false">
         <Label fx:id="labelNickName"/>
         <TextField fx:id="textFieldMessage" promptText="Введите текст" HBox.hgrow="ALWAYS" />

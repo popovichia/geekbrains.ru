@@ -11,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java2.chat.server.entity.Message;
 import java2.chat.server.entity.User;
 
@@ -62,12 +64,16 @@ public class Connection implements Runnable {
                         if (user != null) {
                             jfxController.changeUI(true);
                             jfxController.textAreaChat.appendText("Вы вошли в сeть под именем:\n"
-                                    + "\t" + user.toString() + "\n");
+                                    + "\t" + user.getNickName() + "\n");
                         }
                     }
                     if (receivedObject instanceof Message) {
                         Message message = (Message) receivedObject;
-                        showMessage(message);
+                        if (message.getTitle().equals("UsersList")) {
+                            
+                        } else {
+                            showMessage(message);
+                        }
                     }
                 }
             }
@@ -75,12 +81,20 @@ public class Connection implements Runnable {
             exception.printStackTrace();
         } finally {
             try {
+                inputStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            try {
                 socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
             jfxController.changeUI(false);
         }
+    }
+    public User getUser() {
+        return user;
     }
     public void sendContent(Message message) {
         try {
