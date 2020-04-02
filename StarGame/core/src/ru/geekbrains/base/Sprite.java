@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.exception.GameException;
 import ru.geekbrains.math.Rect;
+import sun.awt.X11.XSystemTrayPeer;
 
 public class Sprite extends Rect {
 
@@ -13,6 +14,9 @@ public class Sprite extends Rect {
     protected float scale = 1f;
     protected TextureRegion[] regions;
     protected int frame;
+    protected Vector2 currentPos;
+    protected Vector2 endPos;
+    protected Vector2 v;
 
     public Sprite(TextureRegion region) throws GameException {
         if (region == null) {
@@ -20,6 +24,9 @@ public class Sprite extends Rect {
         }
         regions = new TextureRegion[1];
         regions[0] = region;
+        currentPos = new Vector2(getLeft(), getBottom());
+        endPos = new Vector2(getLeft(), getBottom());
+        v = new Vector2();
     }
 
     public void setHeightProportion(float height) {
@@ -29,6 +36,20 @@ public class Sprite extends Rect {
     }
 
     public void update(float delta) {
+        if (endPos.cpy().sub(currentPos).len() > v.len()) {
+            currentPos.add(v);
+            System.out.println("currentPos: " + currentPos.x + "; " + currentPos.y + "; " + currentPos.len());
+            System.out.println("endPos: " + endPos.x + "; " + endPos.y + "; " + endPos.len());
+            System.out.println("v: " + v.x + "; " + v.y + "; " + v.len());
+            System.out.println("endPos.cpy().sub(currentPos).len(): " + endPos.cpy().sub(currentPos).len());
+            System.out.println();
+            this.setLeft(currentPos.x);
+            this.setBottom(currentPos.y);
+        } else {
+            this.setLeft(endPos.x);
+            this.setBottom(endPos.y);
+            currentPos.set(endPos);
+        }
     }
 
     public void draw(SpriteBatch batch) {
@@ -47,6 +68,9 @@ public class Sprite extends Rect {
     }
 
     public boolean touchDown(Vector2 touch, int pointer, int button) {
+        System.out.println("TOUCH--------------------------------------");
+        endPos.set(touch);
+        v = touch.sub(currentPos).scl(0.01f);
         return false;
     }
 
