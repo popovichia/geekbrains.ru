@@ -30,6 +30,10 @@ public class MainShip extends Sprite {
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
+    private float animateTimer = 0f;
+    private final float ANIMATE_INTERVAL = 0.1f;
+    private boolean autoShootOn = false;
+
     public MainShip(TextureAtlas atlas, BulletPool bulletPool) throws GameException {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
@@ -48,6 +52,11 @@ public class MainShip extends Sprite {
 
     @Override
     public void update(float delta) {
+        animateTimer += delta;
+        if (animateTimer >= ANIMATE_INTERVAL && autoShootOn) {
+            autoShoot();
+            animateTimer = 0;
+        }
         pos.mulAdd(v, delta);
         if (getLeft() < worldBounds.getLeft()) {
             setLeft(worldBounds.getLeft());
@@ -111,6 +120,13 @@ public class MainShip extends Sprite {
                 break;
             case Input.Keys.UP:
                 shoot();
+                break;
+            case Input.Keys.E:
+                if (autoShootOn) {
+                    autoShootOn = false;
+                } else {
+                    autoShootOn = true;
+                };
         }
         return false;
     }
@@ -138,7 +154,10 @@ public class MainShip extends Sprite {
         }
         return false;
     }
-
+    public void autoShoot() {
+        Bullet bullet = bulletPool.obtain();
+        bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
+    }
     public void shoot() {
         Bullet bullet = bulletPool.obtain();
         bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
