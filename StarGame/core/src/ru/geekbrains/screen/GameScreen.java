@@ -11,6 +11,7 @@ import ru.geekbrains.exception.GameException;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletPool;
 import ru.geekbrains.sprites.Background;
+import ru.geekbrains.sprites.Enemy0;
 import ru.geekbrains.sprites.MainShip;
 import ru.geekbrains.sprites.Star;
 
@@ -28,6 +29,8 @@ public class GameScreen extends BaseScreen {
     private BulletPool bulletPool;
 
     private MainShip mainShip;
+
+    private Enemy0 enemy0;
 
     @Override
     public void show() {
@@ -54,6 +57,7 @@ public class GameScreen extends BaseScreen {
             star.resize(worldBounds);
         }
         mainShip.resize(worldBounds);
+        enemy0.resize(worldBounds);
     }
 
     @Override
@@ -96,6 +100,7 @@ public class GameScreen extends BaseScreen {
                 stars[i] =  new Star(atlas);
             }
             mainShip = new MainShip(atlas, bulletPool);
+            enemy0 = new Enemy0(atlas);
         } catch (GameException e) {
             throw new RuntimeException(e);
         }
@@ -107,6 +112,7 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.update(delta);
         bulletPool.updateActiveSprites(delta);
+        enemy0.update(delta);
     }
 
     public void freeAllDestroyed() {
@@ -123,6 +129,7 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.draw(batch);
         bulletPool.drawActiveSprites(batch);
+        enemy0.draw(batch);
         batch.end();
     }
 }
