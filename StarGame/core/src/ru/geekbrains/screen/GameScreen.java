@@ -49,7 +49,7 @@ public class GameScreen extends BaseScreen {
     private Sound bulletSound;
     private Sound explosion;
     private State state;
-
+//
     @Override
     public void show() {
         super.show();
