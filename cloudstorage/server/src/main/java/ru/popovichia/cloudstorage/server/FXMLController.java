@@ -9,10 +9,13 @@ import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -27,13 +30,17 @@ public class FXMLController implements Initializable {
     private Button bStart;
     @FXML
     private TextArea taLog;
+    @FXML
+    private ListView lvDirs;
+    @FXML
+    private ListView lvConnectedUsers;
     
     private ServerSocket serverSocket = null;
     
     @FXML
     private void handleStartServerMouseClick(MouseEvent mouseEvent) {
         if (bStart.getText().equals("Start")) {
-            int serverPort = 0;
+            int serverPort = -1;
             try {
                 serverPort = Integer.parseInt(tfServerPort.getText());
             } catch (NumberFormatException numberFormatException) {
@@ -46,7 +53,7 @@ public class FXMLController implements Initializable {
                     tfServerPort.setEditable(false);
                     taLog.appendText("Сервер запущен. IP: "
                             + lServerIP.getText()
-                            + ", port: " + tfServerPort.getText() + ".\n");
+                            + tfServerPort.getText() + ".\n");
                 } catch (IOException ioException) {
 
                 }
@@ -59,7 +66,7 @@ public class FXMLController implements Initializable {
                     tfServerPort.setEditable(true);
                     taLog.appendText("Сервер остановлен. IP: "
                             + lServerIP.getText()
-                            + ", port: " + tfServerPort.getText() + ".\n");
+                            + tfServerPort.getText() + ".\n");
                 } catch (IOException ioException) {
                 }
             }
@@ -75,8 +82,11 @@ public class FXMLController implements Initializable {
             if (!serverDir.exists() || !serverDir.isDirectory()) {
                 serverDir.mkdir();
             }
-            taLog.appendText("Приложение запущенно. Рабочая директория: "
+            taLog.appendText("Приложение запущенно.\n"
+                    + "    Рабочая директория: "
                     + serverDir.getAbsolutePath() + "\n");
+            ObservableList<String> itemsObservableList = FXCollections.observableArrayList(serverDir.list());
+            lvDirs.setItems(itemsObservableList);
         } catch (UnknownHostException unknownHostException) {
         }
     }    
