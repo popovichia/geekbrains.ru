@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +20,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import ru.popovichia.cloudstorage.server.service.ConnectionsHandler;
 
 public class FXMLController implements Initializable {
     
@@ -36,6 +38,8 @@ public class FXMLController implements Initializable {
     private ListView lvConnectedUsers;
     
     private ServerSocket serverSocket = null;
+    private ConnectionsHandler clientConnection = null;
+    private boolean isStopped = false;
     
     @FXML
     private void handleStartServerMouseClick(MouseEvent mouseEvent) {
@@ -54,6 +58,8 @@ public class FXMLController implements Initializable {
                     taLog.appendText("Сервер запущен. IP: "
                             + lServerIP.getText()
                             + tfServerPort.getText() + ".\n");
+                    clientConnection = new ConnectionsHandler(serverSocket, isStopped, taLog);
+                    new Thread(clientConnection).start();
                 } catch (IOException ioException) {
 
                 }
@@ -61,6 +67,7 @@ public class FXMLController implements Initializable {
         } else if (bStart.getText().equals("Stop")) {
             if (serverSocket != null) {
                 try {
+                    clientConnection.stop(true);
                     serverSocket.close();
                     bStart.setText("Start");
                     tfServerPort.setEditable(true);
@@ -86,8 +93,8 @@ public class FXMLController implements Initializable {
                     + "    Рабочая директория: "
                     + serverDir.getAbsolutePath() + "\n");
             ObservableList<String> itemsObservableList = FXCollections.observableArrayList(serverDir.list());
-            lvDirs.setItems(itemsObservableList);
+            lvDirs.setItems(itemsObservableList.sorted());
         } catch (UnknownHostException unknownHostException) {
         }
-    }    
+    }
 }
