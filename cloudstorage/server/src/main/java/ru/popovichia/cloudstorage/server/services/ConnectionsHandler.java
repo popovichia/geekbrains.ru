@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.popovichia.cloudstorage.server.service;
+package ru.popovichia.cloudstorage.server.services;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.control.TextArea;
+import ru.popovichia.cloudstorage.server.FXMLController;
 
 /**
  *
@@ -18,16 +16,16 @@ import javafx.scene.control.TextArea;
  */
 public class ConnectionsHandler implements Runnable {
     
+    private FXMLController fxmlController = null;
     private ServerSocket serverSocket = null;
     private Socket socket = null;
     private boolean isStopped = false;
-    private TextArea taLog = null;
     private Client client = null;
     
-    public ConnectionsHandler(ServerSocket serverSocket, boolean isStopped, TextArea taLog) {
+    public ConnectionsHandler(FXMLController fxmlController, ServerSocket serverSocket, boolean isStopped) {
         this.serverSocket = serverSocket;
         this.isStopped = isStopped;
-        this.taLog = taLog;
+        this.fxmlController = fxmlController;
     }
     
     @Override
@@ -38,12 +36,13 @@ public class ConnectionsHandler implements Runnable {
         }
         while (!isStopped) {
             try {
-                taLog.appendText("Сервер ожидает соединение...\n");
+                fxmlController.addMessageToLog("Сервер ожидает соединение...\n");
                 socket = serverSocket.accept();
-                taLog.appendText("Соединение установлено.\n"
+                fxmlController.addMessageToLog("Соединение установлено.\n"
                         + "    Подключился клиент: "
                         + socket.getInetAddress().getHostAddress() + "\n");
                 client = new Client(socket);
+                fxmlController.addClientToList(client);
             } catch (IOException ioException) {
             }
         }        

@@ -6,10 +6,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,7 +18,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import ru.popovichia.cloudstorage.server.service.ConnectionsHandler;
+import ru.popovichia.cloudstorage.server.services.Client;
+import ru.popovichia.cloudstorage.server.services.ConnectionsHandler;
 
 public class FXMLController implements Initializable {
     
@@ -38,8 +37,9 @@ public class FXMLController implements Initializable {
     private ListView lvConnectedUsers;
     
     private ServerSocket serverSocket = null;
-    private ConnectionsHandler clientConnection = null;
+    private ConnectionsHandler connectionsHandler = null;
     private boolean isStopped = false;
+    private ArrayList<Client> clientsArrayList = null;
     
     @FXML
     private void handleStartServerMouseClick(MouseEvent mouseEvent) {
@@ -58,8 +58,8 @@ public class FXMLController implements Initializable {
                     taLog.appendText("Сервер запущен. IP: "
                             + lServerIP.getText()
                             + tfServerPort.getText() + ".\n");
-                    clientConnection = new ConnectionsHandler(serverSocket, isStopped, taLog);
-                    new Thread(clientConnection).start();
+                    connectionsHandler = new ConnectionsHandler(this, serverSocket, isStopped);
+                    new Thread(connectionsHandler).start();
                 } catch (IOException ioException) {
 
                 }
@@ -67,14 +67,17 @@ public class FXMLController implements Initializable {
         } else if (bStart.getText().equals("Stop")) {
             if (serverSocket != null) {
                 try {
-                    clientConnection.stop(true);
+                    connectionsHandler.stop(true);
                     serverSocket.close();
+                    this.clientsArrayList.clear();
+                    lvConnectedUsers.setItems(FXCollections.observableArrayList(this.clientsArrayList));                            
                     bStart.setText("Start");
                     tfServerPort.setEditable(true);
                     taLog.appendText("Сервер остановлен. IP: "
                             + lServerIP.getText()
                             + tfServerPort.getText() + ".\n");
                 } catch (IOException ioException) {
+                    
                 }
             }
         }
@@ -89,6 +92,7 @@ public class FXMLController implements Initializable {
             if (!serverDir.exists() || !serverDir.isDirectory()) {
                 serverDir.mkdir();
             }
+            clientsArrayList = new ArrayList<Client>();
             taLog.appendText("Приложение запущенно.\n"
                     + "    Рабочая директория: "
                     + serverDir.getAbsolutePath() + "\n");
@@ -96,5 +100,19 @@ public class FXMLController implements Initializable {
             lvDirs.setItems(itemsObservableList.sorted());
         } catch (UnknownHostException unknownHostException) {
         }
+    }
+    
+    public void addMessageToLog(String stringMessage) {
+        taLog.appendText(stringMessage);
+    }
+    
+    public void addClientToList(Client client) {
+        this.clientsArrayList.add(client);
+        lvConnectedUsers.setItems(FXCollections.observableArrayList(this.clientsArrayList));
+    }
+    
+    public void delClientFromList(Client client) {
+        this.clientsArrayList.add(client);
+        lvConnectedUsers.setItems(FXCollections.observableArrayList(this.clientsArrayList));        
     }
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ru.popovichia.cloudstorage.server.service;
+package ru.popovichia.cloudstorage.server.services;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,5 +39,12 @@ public class Client {
     
     public OutputStream getOutputStream() {
         return this.outputStream;
+    }
+    
+    @Override
+    public String toString() {
+        return this.socket.getLocalAddress()
+                + ":" +
+                this.socket.getPort();
     }
 }
