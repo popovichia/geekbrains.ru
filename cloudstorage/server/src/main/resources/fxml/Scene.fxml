@@ -8,10 +8,10 @@
 
 <AnchorPane id="AnchorPane" prefHeight="600" prefWidth="600" xmlns:fx="http://javafx.com/fxml" fx:controller="ru.popovichia.cloudstorage.server.FXMLController">
     <children>
-        <Label layoutX="5" layoutY="10" prefHeight="16" prefWidth="80">Server IP: </Label>
-        <Label layoutX="80" layoutY="10" prefHeight="16" prefWidth="150" fx:id="lServerIP"/>
-        <TextField layoutX="230" layoutY="5" prefHeight="16" prefWidth="90" promptText="Server Port" fx:id="tfServerPort"/>
-        <Button layoutX="330" layoutY="5" fx:id="bStart" onMouseClicked="#handleStartServerMouseClick">Start</Button>
+        <Label layoutX="5" layoutY="10" prefHeight="16" prefWidth="120">Server Address: </Label>
+        <Label layoutX="120" layoutY="10" prefHeight="16" prefWidth="150" fx:id="lServerIP"/>
+        <TextField layoutX="270" layoutY="5" prefHeight="16" prefWidth="90" promptText="Server Port" fx:id="tfServerPort"/>
+        <Button layoutX="370" layoutY="5" fx:id="bStart" onMouseClicked="#handleStartServerMouseClick">Start</Button>
         <TextArea layoutX="0" layoutY="40" prefHeight="300" prefWidth="600" editable="false" fx:id="taLog"/>
         <ListView layoutX="0" layoutY="340" prefHeight="300" prefWidth="300" fx:id="lvConnectedUsers"/>
         <ListView layoutX="300" layoutY="340" prefHeight="300" prefWidth="300" fx:id="lvDirs"/>        
