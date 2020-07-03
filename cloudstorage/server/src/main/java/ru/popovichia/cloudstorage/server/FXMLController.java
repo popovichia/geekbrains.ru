@@ -19,6 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import ru.popovichia.cloudstorage.server.services.Client;
+import ru.popovichia.cloudstorage.server.services.ClientsHealthyTask;
 import ru.popovichia.cloudstorage.server.services.ConnectionsHandler;
 
 public class FXMLController implements Initializable {
@@ -98,6 +99,7 @@ public class FXMLController implements Initializable {
                     + serverDir.getAbsolutePath() + "\n");
             ObservableList<String> itemsObservableList = FXCollections.observableArrayList(serverDir.list());
             lvDirs.setItems(itemsObservableList.sorted());
+            new Thread(new ClientsHealthyTask(this)).start();
         } catch (UnknownHostException unknownHostException) {
         }
     }
@@ -106,13 +108,21 @@ public class FXMLController implements Initializable {
         taLog.appendText(stringMessage);
     }
     
+    public ArrayList<Client> getClientsArrayList() {
+        return this.clientsArrayList;
+    }
+    
     public void addClientToList(Client client) {
         this.clientsArrayList.add(client);
-        lvConnectedUsers.setItems(FXCollections.observableArrayList(this.clientsArrayList));
+        updateLvConnectedUsers(this.clientsArrayList);
     }
     
     public void delClientFromList(Client client) {
-        this.clientsArrayList.add(client);
-        lvConnectedUsers.setItems(FXCollections.observableArrayList(this.clientsArrayList));        
+        this.clientsArrayList.remove(client);
+        updateLvConnectedUsers(this.clientsArrayList);        
+    }
+    
+    public void updateLvConnectedUsers(ArrayList<Client> clientsArrayList) {
+        lvConnectedUsers.setItems(FXCollections.observableArrayList(clientsArrayList));
     }
 }

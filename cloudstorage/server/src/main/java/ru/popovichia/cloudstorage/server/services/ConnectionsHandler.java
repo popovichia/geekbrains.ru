@@ -18,9 +18,7 @@ public class ConnectionsHandler implements Runnable {
     
     private FXMLController fxmlController = null;
     private ServerSocket serverSocket = null;
-    private Socket socket = null;
     private boolean isStopped = false;
-    private Client client = null;
     
     public ConnectionsHandler(FXMLController fxmlController, ServerSocket serverSocket, boolean isStopped) {
         this.serverSocket = serverSocket;
@@ -35,15 +33,16 @@ public class ConnectionsHandler implements Runnable {
         } catch (InterruptedException ex) {
         }
         while (!isStopped) {
+            fxmlController.addMessageToLog("Сервер ожидает соединение...\n");
             try {
-                fxmlController.addMessageToLog("Сервер ожидает соединение...\n");
-                socket = serverSocket.accept();
+                Socket socket = serverSocket.accept();
                 fxmlController.addMessageToLog("Соединение установлено.\n"
                         + "    Подключился клиент: "
                         + socket.getInetAddress().getHostAddress() + "\n");
-                client = new Client(socket);
+                Client client = new Client(socket);
                 fxmlController.addClientToList(client);
             } catch (IOException ioException) {
+                
             }
         }        
     }

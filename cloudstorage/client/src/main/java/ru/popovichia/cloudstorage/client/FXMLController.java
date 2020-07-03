@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import ru.popovichia.cloudstorage.client.services.InputChannelClient;
+import ru.popovichia.cloudstorage.client.services.OutputChannelClient;
 
 public class FXMLController implements Initializable {
     
@@ -45,19 +47,26 @@ public class FXMLController implements Initializable {
             }
         } catch (IOException ioException) {
         }
+        InputChannelClient inputChannel = null;
+        OutputChannelClient outputChannel = null;
         if (socket != null && bLogin.getText().equals("Login")) {
-            System.out.println("socket: " + socket.getLocalSocketAddress());
             lClientStatus.setText("Connected.");
             tfServerIP.setEditable(false);
             tfServerPort.setEditable(false);
             tfLogin.setEditable(false);
             pfPassword.setEditable(false);
             bLogin.setText("Logout");
+            inputChannel = new InputChannelClient(socket);
+            new Thread(inputChannel).start();
+            outputChannel = new OutputChannelClient(socket);
+            new Thread(outputChannel).start();
         } else if (socket != null && bLogin.getText().equals("Logout")) {
             try {
-                socket.close();
+                socket.close();                
             } catch (IOException ioException) {
             }
+            inputChannel.stop(true);
+            outputChannel.stop(true);
             lClientStatus.setText("Disconnected.");
             tfServerIP.setEditable(true);
             tfServerPort.setEditable(true);

@@ -17,28 +17,19 @@ import java.net.Socket;
 public class Client {
     
     private Socket socket = null;
-    private InputStream inputStream = null;
-    private OutputStream outputStream = null;
+    private InputChannelServer inputChannelServer;
+    private OutputChannelServer outputChannelServer;
     
     public Client(Socket socket) {
         this.socket = socket;
-        try {
-            this.inputStream = socket.getInputStream();
-            this.outputStream = socket.getOutputStream();
-        } catch (IOException ioException) {
-        }
+        this.inputChannelServer = new InputChannelServer(this.socket);
+        this.outputChannelServer = new OutputChannelServer(this.socket);        
+        new Thread(inputChannelServer).start();
+        new Thread(outputChannelServer).start();
     }
     
     public Socket getSocket() {
         return this.socket;
-    }
-    
-    public InputStream getInputStream() {
-        return this.inputStream;
-    }
-    
-    public OutputStream getOutputStream() {
-        return this.outputStream;
     }
     
     @Override
